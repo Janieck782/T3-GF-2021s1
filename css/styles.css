@@ -36,3 +36,14 @@ background-size: cover;
     
 
 }
+
+@media (min-width: 768px) {
+    .AutomatasAP{
+    
+      display: grid;
+      grid-template-columns: auto auto;
+      text-align: center;
+    
+    }
+  }
+  
