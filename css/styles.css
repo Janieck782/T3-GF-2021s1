@@ -47,3 +47,16 @@ background-size: cover;
     }
   }
   
+  p {
+    display: inline;
+    font-size: 140%;
+}
+
+hr{
+  color: black;
+  padding: 5px;
+}
+
+h1{
+  font-family: 'Bellefair', serif;
+}

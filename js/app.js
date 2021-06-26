@@ -30,9 +30,11 @@ tipoA = 0;
 alfabeto = [];
 
 //Constantes HTML
-const content = document.querySelector("#Automatas")
+const content = document.querySelector("#Automatas");
 
-const contentAlf = document.querySelector("#alfZone")
+const contentAlf = document.querySelector("#alfZone");
+const content1 = document.querySelector("#contenedor--p1");
+const content2 = document.querySelector("#contenedor--p2");
 
 
 //Logs
@@ -64,6 +66,11 @@ const DescargarLogs = () => {
     document.body.removeChild(element);
 }
 
+//Desactivar boton
+function desactiva_enlace(enlace) {
+    enlace.disabled = 'disabled';
+}
+
 //Funciones 
 function iniciarALF(enlace){
     enlace.disabled = 'disabled';
@@ -87,6 +94,8 @@ function iniciarAP(zone){
     var contenedor2 = document.createElement("div");
     contenedor1.setAttribute("class","contenedor");
     contenedor2.setAttribute("class","contenedor");
+    contenedor1.setAttribute("id","contenedor-p1");
+    contenedor2.setAttribute("id","contenedor-p2");
     zone.appendChild(contenedor1);
     zone.appendChild(contenedor2);
     generarEstados(contenedor1,1);
@@ -110,6 +119,32 @@ function iniciarAutomata(enlace){
 function iniciarFormulario(enlace,id){
     enlace.disabled = 'disabled';
     guardarEstados(id);
+    if(tipoA == 1){
+        const content = document.querySelector("#Automatas");
+    }
+    if(tipoA == 2){
+        
+    }
+    if(tipoA == 1){
+        generarFormularioAFD(content,1);
+    }
+    if(tipoA == 2){
+        if(id==1){
+            generarFormularioAP(content1,1);
+        }
+        if(id==2){
+            generarFormularioAP(content2,2);
+        }
+    }
+}
+
+function iniciarFinal(enlace){
+    guardarFormularioAFD(1);
+    if(guardarFormularioAFD(1) == true){
+        enlace.disabled = 'disabled';
+        generarFinales();
+    }
+
 }
 
 function tipoAutomata(){
@@ -145,11 +180,13 @@ function guardarALF(){
 }
 
 function guardarEstados(id){
+    var texto = document.createElement("h4");
+    texto.innerHTML = "Los estados son:"
     let Qs = [];
     let cantidad = document.getElementById(`contQ-${id}`).value;
-    console.log(cantidad);
         for(let i = 0; i < cantidad ; i++){
             Qs.push(`q${i}`)
+            texto.innerHTML += `,q${i} ` 
         }
         if(tipoA == 1){
             automata1.k = Qs;
@@ -162,6 +199,45 @@ function guardarEstados(id){
                 automataP2.k = Qs;
             }
         }
+}
+
+function guardarFinales(){
+    let finales = [];
+    for(let i = 0 ; i < automata1.k.length; i++){
+        let aux = document.getElementById(`q-${i}`).checked;
+        if (aux == true) {
+            finales.push(`q${i}`);
+    }
+}
+if(finales.length == 0){
+    alert("Debe haber ingresado al menos un valor");
+
+    return false;
+}else{
+    automata1.f = finales;
+    return true;
+}
+}
+
+function guardarFormularioAFD(id){
+    let caminos = [];
+    cont= 1;
+    for(let i = 0; i < automata1.k.length; i++){
+        for(let j = 0; j < automata1.s.length; j++){
+            let valor = document.getElementById(`g-${id}-${i}-${j}`).value;
+            if(verificarFormularioAFD(valor)==true){
+                caminos.push(valor);
+            }
+            if(verificarFormularioAFD(valor)==false){
+                caminos=[];
+                alert(`El campo N°${cont} contiene un valor no valido`);
+                return false;
+            }
+            cont++;
+        }
+    }
+    automata1.g = caminos;
+    return true;
 }
 
 function generarALF(zone){
@@ -199,4 +275,149 @@ function generarEstados(zone,id){
     zone.appendChild(texto);
     zone.appendChild(inputQ);
     zone.appendChild(btn);
+    
+
+}
+
+function generarFormularioAP(zone,id) {
+    var content = document.createElement("div");
+    content.setAttribute("class","contenedor")
+    var texto = document.createElement("h4");
+    texto.innerHTML = "4.Ingrese el estado a recorrer de llegada por cada camino: ";
+    content.appendChild(texto);
+
+
+
+
+    zone.appendChild(content);
+}
+
+function generarFormularioAFD(zone,id) {
+    var contentF = document.createElement("div");
+    var hue = document.createElement("div");
+    hue.setAttribute("class","contenedor")
+    
+    var texto = document.createElement("h4");
+    
+    
+    texto.innerHTML = "4.Ingrese el estado a recorrer de llegada por cada camino: ";
+    contentF.appendChild(texto);
+    var btn = document.createElement("button")
+    btn.innerHTML = "Continuar"
+    btn.setAttribute("onclick","iniciarFinal(this)")
+    let contador = 1;
+
+    for(let i = 0; i < automata1.k.length; i++){
+        for(let j = 0; j < automata1.s.length; j++){
+            var salto = document.createElement("br");
+            let letra = (String.fromCharCode(97 + j));
+            var texto = document.createElement("p");
+            texto.innerHTML = `${contador}.(q${i},${letra}):`;
+            let inputG = document.createElement("input")
+            inputG.type = "text"
+            inputG.setAttribute("id",`g-${id}-${i}-${j}`);
+            if (i != automata1.s.length - 1) {
+                inputG.setAttribute('value', `q${i+1}`);
+            } else {
+                inputG.setAttribute('value', `q0`);
+            }
+            contentF.appendChild(texto);
+            contentF.appendChild(inputG);
+            contentF.appendChild(salto);
+            
+            contador++;
+        }
+    }
+
+    hue.appendChild(contentF);
+    hue.appendChild(btn);
+    zone.appendChild(hue);
+}
+
+function generarFinales(){
+    //const content = document.querySelector("#Automatas");
+    var texto1 = document.createElement("h4"); //crea linea de texto
+    texto1.innerHTML = `5.Seleccione los estados finales.`; //formato linea+
+    var btn = document.createElement("button");
+    btn.innerHTML = "Continuar";
+    btn.setAttribute("onclick","imprimirImagen(this)")
+     var contenedor = document.createElement("div");
+     contenedor.appendChild(texto1);
+     contenedor.setAttribute("class","contenedor");
+        for(let i = 0 ; i < automata1.k.length; i++){
+            var salto = document.createElement("br");
+            var inp = document.createElement("input");
+            var p = document.createElement("p");
+            p.innerHTML = `Q${i}:`;
+            inp.setAttribute("type", "checkbox");
+            inp.setAttribute("id", `q-${i}`);
+            contenedor.appendChild(p);
+            contenedor.appendChild(inp);
+            contenedor.appendChild(salto);
+            if (i + 1 == automata1.k.length) {
+                inp.setAttribute("checked", "true");
+            }
+        }
+        contenedor.appendChild(btn)
+     content.appendChild(contenedor);
+    }
+
+function verificarFormularioAFD(aux){
+    for(let i = 0; i < automata1.k.length ; i++){
+        if(automata1.k[i] == aux ){
+            return true;
+        }
+    }
+    return false;
+}
+
+function imprimirImagen(enlace){
+
+    if(guardarFinales()==true){
+        enlace.disabled = 'disabled';
+
+        var contenedor = document.createElement("div");
+        contenedor.setAttribute("class","contenedor")
+        content.appendChild(contenedor);
+        imprimirAutomataAFD(automata1,contenedor);
+
+    }
+
+}
+ 
+function imprimirAutomataAFD(automatas,zonaImg){
+
+
+    var img = document.createElement("img");
+    let salto = "%20";
+    let espacio = "%0A%09"
+    let espacio1 = "%20%5Bshape%3Ddoublecircle%5D%3B"
+    let graph = `digraph{ poi -> q0 [color=red,style=dotted] ${salto}`;
+    let o = 0;
+   
+        if (automatas.k.length == 1) {
+            for (let p = 0; p < automatas.s.length; p++) { //alfabeto
+                graph += `q0 -> q0 [label="${automatas.s[p]}"] ${salto} `;
+            }
+
+        } else {
+            for (let i = 0; i < automatas.k.length; i++) { //estados
+                for (let j = 0; j < automatas.s.length; j++) { //alfabeto
+                    graph += `${automatas.k[i]} -> ${automatas.g[o]} [label="${automatas.s[j]}"] ${salto} `;
+                    o++;
+                }
+            }
+        }
+    
+
+    for (let q = 0; q < automatas.f.length; q++) { //final
+        graph += ` ${espacio} ${automatas.f[q]} ${espacio1}${salto}`
+    }
+    graph += "poi[shape=point]}";
+
+
+
+
+    img.setAttribute("src", `https://quickchart.io/graphviz?format=png&width=auto&height=auto&graph=${graph}`);
+    zonaImg.appendChild(img);
 }
