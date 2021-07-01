@@ -284,10 +284,10 @@ function generarFormularioAP(zone,id) {
     content.setAttribute("class","contenedor")
     var texto = document.createElement("h4");
     texto.innerHTML = "4.Ingrese el estado a recorrer de llegada por cada camino: ";
+    var texto1 = document.createElement("h4");
+    texto1.innerHTML = "0 = Trancision Vacia";
     content.appendChild(texto);
-
-
-
+    content.appendChild(texto1);
 
     zone.appendChild(content);
 }
@@ -302,6 +302,11 @@ function generarFormularioAFD(zone,id) {
     
     texto.innerHTML = "4.Ingrese el estado a recorrer de llegada por cada camino: ";
     contentF.appendChild(texto);
+
+    var texto1 = document.createElement("h4");
+    texto1.innerHTML = "x = Trancision Vacia";
+    contentF.appendChild(texto1);
+
     var btn = document.createElement("button")
     btn.innerHTML = "Continuar"
     btn.setAttribute("onclick","iniciarFinal(this)")
@@ -316,7 +321,7 @@ function generarFormularioAFD(zone,id) {
             let inputG = document.createElement("input")
             inputG.type = "text"
             inputG.setAttribute("id",`g-${id}-${i}-${j}`);
-            if (i != automata1.s.length - 1) {
+            if (i != automata1.k.length - 1) {
                 inputG.setAttribute('value', `q${i+1}`);
             } else {
                 inputG.setAttribute('value', `q0`);
@@ -364,7 +369,7 @@ function generarFinales(){
 
 function verificarFormularioAFD(aux){
     for(let i = 0; i < automata1.k.length ; i++){
-        if(automata1.k[i] == aux ){
+        if(automata1.k[i] == aux || "x" == aux ){
             return true;
         }
     }
@@ -380,6 +385,7 @@ function imprimirImagen(enlace){
         contenedor.setAttribute("class","contenedor")
         content.appendChild(contenedor);
         imprimirAutomataAFD(automata1,contenedor);
+        generarER(automata1);
 
     }
 
@@ -387,7 +393,8 @@ function imprimirImagen(enlace){
  
 function imprimirAutomataAFD(automatas,zonaImg){
 
-
+    var texto = document.createElement("h4");
+    texto.innerHTML = "El automata AFD es: ";
     var img = document.createElement("img");
     let salto = "%20";
     let espacio = "%0A%09"
@@ -403,8 +410,11 @@ function imprimirAutomataAFD(automatas,zonaImg){
         } else {
             for (let i = 0; i < automatas.k.length; i++) { //estados
                 for (let j = 0; j < automatas.s.length; j++) { //alfabeto
+                    if(automatas.g[o] == "x" ){
+                        o++
+                    }else{
                     graph += `${automatas.k[i]} -> ${automatas.g[o]} [label="${automatas.s[j]}"] ${salto} `;
-                    o++;
+                    o++;}
                 }
             }
         }
@@ -419,5 +429,102 @@ function imprimirAutomataAFD(automatas,zonaImg){
 
 
     img.setAttribute("src", `https://quickchart.io/graphviz?format=png&width=auto&height=auto&graph=${graph}`);
+    zonaImg.appendChild(texto);
     zonaImg.appendChild(img);
+}
+
+
+//AFD a ER
+let resultado = "";
+let estados = [];
+let finales =[];
+let alfabetoER = alfabeto;
+let matrizCamino = new Array;
+let ecu;
+let pila = new Array; 
+let cantQ = automata1.k.length;
+let cantS;
+let terminado = false;
+//split("+")
+
+
+function generarER(automata){
+    cantQ = automata1.k.length;
+    let cantpilas = 0;
+    guardarTrancisiones(automata);
+    resultado = leer(0,97,true);
+    console.log(resultado); 
+
+    
+    
+}
+
+//let letra = (String.fromCharCode(97 + j));
+
+function leer(estado,alfabe,bol) {
+    let aux = matrizCamino[estado][alfabe]
+    let letra = (String.fromCharCode(alfabe));
+    console.log(aux);
+
+    
+    if(bol == true){
+        let ecuacion = "(";
+        for(let i = 0 ; i < cantQ;  i++){
+            console.log(estado);
+            ecuacion1 = leer(i,97,false);
+            ecuacion += ecuacion1;
+        }
+        ecuacion +=")";
+
+        return ecuacion;
+    }
+    if(alfabe>cantS){
+        return "";
+    }
+    if(aux.charAt(0) == "x"){
+        return "";
+    }
+
+    if(aux == estado){
+        return letra;
+    }
+    if( aux.charAt(0) == "*"){
+        let remplazar = matrizCamino[estado][alfabe].charAt(1);
+        matrizCamino[estado][alfabe] = remplazar;
+        return `${letra}*`;
+    }
+
+    return letra + leer(aux,alfabe+1,false)
+
+
+    
+    
+
+    //return aux;
+}
+
+
+function guardarTrancisiones(automata){
+    let cont=0;
+
+    for(let i = 0 ; i < automata.k.length ; i++ ){
+        matrizCamino[i]= new Array(automata.s.length);
+        for(let j = 97; j < automata.s.length+97 ; j++){
+            let letra = (String.fromCharCode(j));
+            if(automata1.g[cont] == "x"){
+                matrizCamino[i][j]="x";
+                cont++;
+            }else{
+                matrizCamino[i][j]=""
+                if(automata1.f.includes(automata1.g[cont])){
+                    matrizCamino[i][j]+="*"
+                }
+                matrizCamino[i][j]+=`${automata1.g[cont].charAt(1)}`;
+                cont++;
+            }
+          
+        }
+
+    }
+    console.table(matrizCamino);
 }
