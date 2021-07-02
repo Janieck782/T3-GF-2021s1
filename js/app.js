@@ -287,16 +287,16 @@ function generarEstados(zone,id){
 }
 
 function generarFormularioAP(zone,id) {
-    var content1 = document.createElement("div");
-    content1.setAttribute("class","contenedor")
+    var content3 = document.createElement("div");
+    content3.setAttribute("class","contenedor")
     var texto = document.createElement("h4");
     texto.innerHTML = "4.Ingrese el estado a recorrer de llegada por cada camino: ";
     var texto1 = document.createElement("h4");
     texto1.innerHTML = "0 = Trancision Vacia";
-    content1.appendChild(texto);
-    content1.appendChild(texto1);
+    content3.appendChild(texto);
+    content3.appendChild(texto1);
 
-    zone.appendChild(content1);
+    zone.appendChild(content3);
 }
 
 function generarFormularioAFD(zone,id) {
