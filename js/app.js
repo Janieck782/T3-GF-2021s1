@@ -517,7 +517,7 @@ function leer(estado,letra){
     if(aux.charAt(0)== "*"){//caso final
         ayu = aux.charAt(1);
         matrizCamino[estado][letra] = ayu;
-        return letter + "*" + verificaLeer(estado,letra)    
+        return letter + "*";    
     }
     if(aux == estado){
         return letter;
