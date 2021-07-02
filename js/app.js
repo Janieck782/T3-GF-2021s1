@@ -20,14 +20,14 @@ class automataAP {
 }
 
 //Se crean los automatas 
-automata1 = new automataAFD;
+let automata1 = new automataAFD;
 
-automataP1 = new automataAP;
-automataP2 = new automataAP;
+let automataP1 = new automataAP;
+let automataP2 = new automataAP;
 
 //variable
-tipoA = 0;
-alfabeto = [];
+let tipoA = 0;
+let alfabeto = [];
 
 //Constantes HTML
 const content = document.querySelector("#Automatas");
@@ -106,7 +106,7 @@ function iniciarAP(zone){
 function iniciarAutomata(enlace){
     enlace.disabled = 'disabled';
     guardarALF();
-    tipo = tipoAutomata();
+    var tipo = tipoAutomata();
     tipoA = tipo;
     if(tipo == 1){
 
@@ -120,12 +120,7 @@ function iniciarAutomata(enlace){
 function iniciarFormulario(enlace,id){
     enlace.disabled = 'disabled';
     guardarEstados(id);
-    if(tipoA == 1){
-        const content = document.querySelector("#Automatas");
-    }
-    if(tipoA == 2){
-        
-    }
+
     if(tipoA == 1){
         generarFormularioAFD(content,1);
     }
@@ -206,7 +201,7 @@ function guardarEstados(id){
 
 function guardarFinales(){
 
-    let finales = [];
+    finales = [];
     for(let i = 0 ; i < automata1.k.length; i++){
         let aux = document.getElementById(`q-${i}`).checked;
         if (aux == true) {
@@ -228,7 +223,7 @@ if(finales.length == 0){
 function guardarFormularioAFD(id){
     
     let caminos = [];
-    cont= 1;
+    var cont= 1;
     for(let i = 0; i < automata1.k.length; i++){
         for(let j = 0; j < automata1.s.length; j++){
             let valor = document.getElementById(`g-${id}-${i}-${j}`).value;
@@ -236,7 +231,10 @@ function guardarFormularioAFD(id){
                 caminos.push(valor);
             }
             if(verificarFormularioAFD(valor)==false){
-                caminos=[];
+                caminos.splice(0, caminos.length);
+
+                console.log(caminos);
+
                 alert(`El campo N°${cont} contiene un valor no valido`);
                 plog.warn("Se ha introducido un estado no valido");
                 return false;
@@ -289,16 +287,16 @@ function generarEstados(zone,id){
 }
 
 function generarFormularioAP(zone,id) {
-    var content = document.createElement("div");
-    content.setAttribute("class","contenedor")
+    var content1 = document.createElement("div");
+    content1.setAttribute("class","contenedor")
     var texto = document.createElement("h4");
     texto.innerHTML = "4.Ingrese el estado a recorrer de llegada por cada camino: ";
     var texto1 = document.createElement("h4");
     texto1.innerHTML = "0 = Trancision Vacia";
-    content.appendChild(texto);
-    content.appendChild(texto1);
+    content1.appendChild(texto);
+    content1.appendChild(texto1);
 
-    zone.appendChild(content);
+    zone.appendChild(content1);
 }
 
 function generarFormularioAFD(zone,id) {
@@ -325,8 +323,8 @@ function generarFormularioAFD(zone,id) {
         for(let j = 0; j < automata1.s.length; j++){
             var salto = document.createElement("br");
             let letra = (String.fromCharCode(97 + j));
-            var texto = document.createElement("p");
-            texto.innerHTML = `${contador}.(q${i},${letra}):`;
+            var texto2 = document.createElement("p");
+            texto2.innerHTML = `${contador}.(q${i},${letra}):`;
             let inputG = document.createElement("input")
             inputG.type = "text"
             inputG.setAttribute("id",`g-${id}-${i}-${j}`);
@@ -335,7 +333,7 @@ function generarFormularioAFD(zone,id) {
             } else {
                 inputG.setAttribute('value', `q0`);
             }
-            contentF.appendChild(texto);
+            contentF.appendChild(texto2);
             contentF.appendChild(inputG);
             contentF.appendChild(salto);
             
@@ -473,7 +471,7 @@ function imprimirEr(ecuacion){
 
 function generarER(automata){
     cantQ = automata1.k.length;
-    let cantpilas = 0;
+    // let cantpilas = 0;
     guardarTrancisiones(automata);
     resultado = obtenerECu()
     imprimirEr(resultado);    
@@ -508,14 +506,14 @@ if(estado < automata1.k.length && letra < automata1.k.length){
 }
 
 function leer(estado,letra){
-    aux = matrizCamino[estado][letra]
-    letter = (String.fromCharCode(97 + letra))
+    var aux = matrizCamino[estado][letra]
+    var letter = (String.fromCharCode(97 + letra))
 
     if(aux.charAt(0) == "x"){
         return "";
     }
     if(aux.charAt(0)== "*"){//caso final
-        ayu = aux.charAt(1);
+        var ayu = aux.charAt(1);
         matrizCamino[estado][letra] = ayu;
         return letter + "*";    
     }
