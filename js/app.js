@@ -482,18 +482,26 @@ function generarER(automata){
 
 function obtenerECu(){
     let ecua = "";
-    for(let i = 0 ; i < automata1.k.length;i++){
-        ecua += "("+leer(i,0)+")"
-        if(i!=automata1.k.length-1){
+    //deberian ir 2 for
+    for(let i = 0 ; i < automata1.k.length ;i++){
+        ecua+="("
+        for(let j = 0 ; j < automata1.s.length ; j++){
+        ecua += leer(i,j);
+        if(j!=automata1.s.length-1){
         ecua+= "%2B"
         }
-    }
-    return ecua;
-} 
+        }
+        ecua+=")"
+        if(i!=automata1.k.length-1){
+            ecua+="%2B"
+        }
+    } 
+    return ecua+"  ";
+}
 
 function verificaLeer(estado , letra){
 if(estado < automata1.k.length && letra < automata1.k.length){
-    return leer(estado,letra)
+    return leer(estado,letra);
 }else{
     return "";
 }
@@ -503,8 +511,8 @@ function leer(estado,letra){
     aux = matrizCamino[estado][letra]
     letter = (String.fromCharCode(97 + letra))
 
-    if(aux.charAt(0)=="x"){
-        return ""
+    if(aux.charAt(0) == "x"){
+        return "";
     }
     if(aux.charAt(0)== "*"){//caso final
         ayu = aux.charAt(1);
@@ -512,13 +520,11 @@ function leer(estado,letra){
         return letter + "*" + verificaLeer(estado,letra)    
     }
     if(aux == estado){
-        return letter
+        return letter;
     }
 
-
-    return verificaLeer(aux,letra+1);
-
-
+    return letter;
+    //return verificaLeer(aux,letra);
 }
 
 function guardarTrancisiones(automata){
