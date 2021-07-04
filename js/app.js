@@ -464,7 +464,8 @@ function imprimirEr(ecuacion){
         texto.innerHTML = "La expresion regular es: ";
         contenedor.appendChild(texto);
         var img = document.createElement("img");
-        let graph = `digraph{ q0 -> qF [taillabel="${ecuacion}"]}`;
+        let graph = `digraph{ qI -> qF [taillabel="${ecuacion}"]
+        qF[shape=doublecircle]}`;
         img.setAttribute("src",`https://quickchart.io/graphviz?format=png&width=auto&height=auto&graph=${graph}`)
         contenedor.appendChild(img);
 }
