@@ -491,7 +491,7 @@ function obtenerECu(){
         }
         ecua+=")"
         if(i!=automata1.k.length-1){
-            ecua+="%2B"
+            ecua+="·"
         }
     } 
     return ecua+"  ";
